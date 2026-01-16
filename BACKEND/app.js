@@ -5,6 +5,8 @@ const morgan = require("morgan");
 const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv/config");
+const authJwt = require("./helpers/jwt");
+const errorHandler = require("./helpers/error-handler");
 
 app.use(cors());
 
@@ -13,6 +15,15 @@ const api = process.env.API_URL;
 // Middleware to parse JSON bodies
 app.use(express.json());
 app.use(morgan("tiny"));
+
+// Serve static files from the public directory (must be before JWT middleware)
+app.use('/public/uploads', express.static(__dirname + '/public/uploads'));
+
+// Middleware to verify JWT token before accessing the routes
+app.use(authJwt());
+
+// Middleware to handle errors
+app.use(errorHandler);
 
 // Routes
 const productRouter = require("./routes/products");
