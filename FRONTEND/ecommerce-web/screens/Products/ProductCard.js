@@ -1,11 +1,19 @@
 import React from "react";
-import { StyleSheet, View, Image, Text } from "react-native";
+import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native";
 
 const ProductCard = (props) => {
-  const { name, image, price, countInStock } = props;
+  const { name, image, price, countInStock, onPress } = props;
 
-  return (
-    <View style={styles.container}>
+  const formatPrice = (price) => {
+    if (!price) return "Price on request";
+    return `$${price.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
+  };
+
+  const CardContent = (
+    <>
       <View style={styles.imageContainer}>
         <Image
           style={styles.image}
@@ -26,10 +34,24 @@ const ProductCard = (props) => {
         <Text style={styles.title} numberOfLines={2}>
           {name}
         </Text>
-        <Text style={styles.price}>${price}</Text>
+        <Text style={styles.price}>{formatPrice(price)}</Text>
       </View>
-    </View>
+    </>
   );
+
+  if (onPress) {
+    return (
+      <TouchableOpacity
+        style={styles.container}
+        onPress={onPress}
+        activeOpacity={0.9}
+      >
+        {CardContent}
+      </TouchableOpacity>
+    );
+  }
+
+  return <View style={styles.container}>{CardContent}</View>;
 };
 
 const styles = StyleSheet.create({

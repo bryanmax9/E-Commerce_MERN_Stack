@@ -14,7 +14,7 @@ import ProductList from "./ProductList";
 
 const data = require("../../assets/data/products.json");
 
-const ProductContainer = ({ onScroll, selectedCategory }) => {
+const ProductContainer = ({ onScroll, selectedCategory, onProductPress }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [scrollY, setScrollY] = useState(0);
@@ -151,6 +151,7 @@ const ProductContainer = ({ onScroll, selectedCategory }) => {
                 <ProductList
                   key={item._id?.$oid || item.id || `product-${index}`}
                   item={item}
+                  onProductPress={onProductPress}
                 />
               ))}
             </View>

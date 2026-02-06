@@ -5,7 +5,7 @@ import {
   Text,
   Dimensions,
 } from "react-native";
-import MostPopularCard from "./MostPopularCard";
+import ProductCard from "../Products/ProductCard";
 
 const productsData = require("../../assets/data/products.json");
 
@@ -74,12 +74,28 @@ const MostPopularSection = ({ onProductPress }) => {
         {popularProducts.length > 0 ? (
           <View style={styles.productsGrid}>
             {popularProducts.map((item, index) => (
-              <MostPopularCard
+              <View
                 key={item._id?.$oid || item.id || `popular-${index}`}
-                item={item}
-                onPress={onProductPress}
-                isSmallScreen={isSmallScreen}
-              />
+                style={[
+                  styles.productCardWrapper,
+                  {
+                    width: isSmallScreen
+                      ? "100%"
+                      : windowDimensions.width < 1024
+                      ? "48%"
+                      : "23%",
+                    marginBottom: isSmallScreen ? 20 : 0,
+                  },
+                ]}
+              >
+                <ProductCard
+                  name={item.name}
+                  image={item.image}
+                  price={item.price}
+                  countInStock={item.countInStock}
+                  onPress={() => onProductPress && onProductPress(item)}
+                />
+              </View>
             ))}
           </View>
         ) : (
@@ -135,6 +151,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-start",
     width: "100%",
+  },
+  productCardWrapper: {
+    marginBottom: 0,
   },
   emptyContainer: {
     alignItems: "center",

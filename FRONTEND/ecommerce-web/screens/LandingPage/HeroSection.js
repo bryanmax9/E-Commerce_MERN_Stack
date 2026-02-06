@@ -22,17 +22,39 @@ const HeroSection = ({ onShopCollections }) => {
   const windowDimensions = Dimensions.get("window");
   const isSmallScreen = windowDimensions.width < 768;
   const videoRef = useRef(null);
+  const [videoError, setVideoError] = useState(false);
+  const [videoLoaded, setVideoLoaded] = useState(false);
 
   useEffect(() => {
     if (Platform.OS === "web" && videoRef.current) {
       const video = videoRef.current;
-      video.play();
+      // Set video properties
       video.loop = true;
       video.muted = true;
+      // Try to play, but don't treat play() failure as error
+      // Mobile browsers often require user interaction for autoplay
+      video.play().catch(() => {
+        // Play failed (likely autoplay policy), but video might still load
+        // Only show error if video actually fails to load (handled by onError)
+      });
     } else if (Platform.OS !== "web" && Video && videoRef.current) {
-      videoRef.current.playAsync();
+      // For native, try to play but don't treat failure as immediate error
+      videoRef.current.playAsync().catch(() => {
+        // Play failed, but video might still be loading
+      });
     }
   }, []);
+
+  const handleVideoError = (e) => {
+    // Only set error when video actually fails to load
+    console.log("Video error:", e);
+    setVideoError(true);
+  };
+
+  const handleVideoLoaded = () => {
+    setVideoLoaded(true);
+    setVideoError(false);
+  };
 
   const videoSource = require("../../assets/bobby.mp4");
 
@@ -55,7 +77,7 @@ const HeroSection = ({ onShopCollections }) => {
       ]}
     >
       {/* Video Background */}
-      {isSmallScreen ? (
+      {videoError ? (
         <View style={styles.videoPlaceholder}>
           <ImageBackground
             source={require("../../assets/burmes-Banner.png")}
@@ -72,6 +94,9 @@ const HeroSection = ({ onShopCollections }) => {
           loop
           muted
           playsInline
+          onError={handleVideoError}
+          onLoadedData={handleVideoLoaded}
+          onCanPlay={handleVideoLoaded}
         />
       ) : Video ? (
         <Video
@@ -82,6 +107,7 @@ const HeroSection = ({ onShopCollections }) => {
           shouldPlay
           isLooping
           isMuted
+          onError={handleVideoError}
         />
       ) : (
         <View style={styles.videoPlaceholder}>

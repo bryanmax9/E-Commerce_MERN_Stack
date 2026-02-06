@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  ScrollView,
-  Dimensions,
-} from "react-native";
+import { View, StyleSheet, Text, ScrollView, Dimensions } from "react-native";
 import CategoriesSection from "./LandingPage/CategoriesSection";
+import Footer from "../Shared/Footer";
 
 const categoriesData = require("../assets/data/categories.json");
 
@@ -25,7 +20,7 @@ const categoryColors = {
   bracelets: "#4A90E2",
 };
 
-const Collections = ({ onCategorySelect }) => {
+const Collections = ({ onCategorySelect, onNavigate }) => {
   const [categories, setCategories] = useState([]);
   const [windowDimensions, setWindowDimensions] = useState(
     Dimensions.get("window")
@@ -68,6 +63,7 @@ const Collections = ({ onCategorySelect }) => {
         categories={categories}
         onCategorySelect={handleCategoryPress}
       />
+      <Footer onNavigate={onNavigate} />
     </ScrollView>
   );
 };

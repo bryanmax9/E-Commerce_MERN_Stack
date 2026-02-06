@@ -3,7 +3,7 @@ import { TouchableOpacity, View, StyleSheet, Dimensions } from "react-native";
 import ProductCard from "./ProductCard";
 
 const ProductList = (props) => {
-  const { item } = props;
+  const { item, onProductPress } = props;
 
   // State to track window dimensions - updates dynamically
   const [windowDimensions, setWindowDimensions] = useState(
@@ -52,6 +52,7 @@ const ProductList = (props) => {
         },
       ]}
       activeOpacity={0.9}
+      onPress={() => onProductPress && onProductPress(item)}
     >
       <View style={styles.cardWrapper}>
         <ProductCard {...item} />

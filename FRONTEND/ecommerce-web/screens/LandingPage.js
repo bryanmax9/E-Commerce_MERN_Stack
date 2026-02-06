@@ -6,6 +6,7 @@ import MostPopularSection from "./LandingPage/MostPopularSection";
 import DiscoverMoreSection from "./LandingPage/DiscoverMoreSection";
 import FromBurmesSection from "./LandingPage/FromBurmesSection";
 import CollageSection from "./LandingPage/CollageSection";
+import Footer from "../Shared/Footer";
 
 const categoriesData = require("../assets/data/categories.json");
 
@@ -24,7 +25,7 @@ const categoryColors = {
   bracelets: "#4A90E2",
 };
 
-const LandingPage = ({ onCategorySelect, onShopCollections, onMadeForYou }) => {
+const LandingPage = ({ onCategorySelect, onShopCollections, onMadeForYou, onNavigate, onProductPress }) => {
   const [categories, setCategories] = useState([]);
   const [windowDimensions, setWindowDimensions] = useState(
     Dimensions.get("window")
@@ -65,10 +66,11 @@ const LandingPage = ({ onCategorySelect, onShopCollections, onMadeForYou }) => {
         categories={categories}
         onCategorySelect={handleCategoryPress}
       />
-      <MostPopularSection onProductPress={handleCategoryPress} />
+      <MostPopularSection onProductPress={onProductPress} />
       <DiscoverMoreSection onDiscoverMore={onMadeForYou} />
       <FromBurmesSection onShopNew={onShopCollections} />
       <CollageSection />
+      <Footer onNavigate={onNavigate} />
     </ScrollView>
   );
 };

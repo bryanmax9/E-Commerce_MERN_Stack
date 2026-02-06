@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Platform } from "react-native";
 import ProductContainer from "./screens/Products/ProductContainer";
+import SingleProduct from "./screens/Products/SingleProduct";
 import LandingPage from "./screens/LandingPage";
 import Collections from "./screens/Collections";
 import MadeForYou from "./screens/MadeForYou";
@@ -16,9 +17,11 @@ Text.defaultProps.style = {
 export default function App() {
   const [scrollY, setScrollY] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [showProducts, setShowProducts] = useState(false);
   const [showCollections, setShowCollections] = useState(false);
   const [showMadeForYou, setShowMadeForYou] = useState(false);
+  const [showSingleProduct, setShowSingleProduct] = useState(false);
 
   // Load Google Fonts for web
   useEffect(() => {
@@ -57,7 +60,9 @@ export default function App() {
       setShowProducts(false);
       setShowCollections(false);
       setShowMadeForYou(false);
+      setShowSingleProduct(false);
       setSelectedCategory(null);
+      setSelectedProduct(null);
       // Scroll to top when navigating to home (web only)
       if (
         Platform.OS === "web" &&
@@ -66,6 +71,33 @@ export default function App() {
       ) {
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
+    }
+  };
+
+  const handleProductSelect = (product) => {
+    setSelectedProduct(product);
+    setShowSingleProduct(true);
+    setShowProducts(false);
+    // Scroll to top when navigating to product (web only)
+    if (
+      Platform.OS === "web" &&
+      typeof window !== "undefined" &&
+      window.scrollTo
+    ) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const handleBackFromProduct = () => {
+    setShowSingleProduct(false);
+    setShowProducts(true);
+    // Scroll to top when going back (web only)
+    if (
+      Platform.OS === "web" &&
+      typeof window !== "undefined" &&
+      window.scrollTo
+    ) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -100,20 +132,30 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Header scrollY={scrollY} onNavigate={handleNavigate} />
-      {showProducts ? (
+      {showSingleProduct ? (
+        <SingleProduct
+          product={selectedProduct}
+          onBack={handleBackFromProduct}
+          onNavigate={handleNavigate}
+          onProductPress={handleProductSelect}
+        />
+      ) : showProducts ? (
         <ProductContainer
           onScroll={setScrollY}
           selectedCategory={selectedCategory}
+          onProductPress={handleProductSelect}
         />
       ) : showCollections ? (
-        <Collections onCategorySelect={handleCategorySelect} />
+        <Collections onCategorySelect={handleCategorySelect} onNavigate={handleNavigate} />
       ) : showMadeForYou ? (
-        <MadeForYou />
+        <MadeForYou onNavigate={handleNavigate} />
       ) : (
         <LandingPage
           onCategorySelect={handleCategorySelect}
           onShopCollections={handleShopCollections}
           onMadeForYou={handleMadeForYou}
+          onNavigate={handleNavigate}
+          onProductPress={handleProductSelect}
         />
       )}
     </View>
